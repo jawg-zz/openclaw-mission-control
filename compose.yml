@@ -14,8 +14,6 @@ services:
       interval: 5s
       timeout: 3s
       retries: 20
-    networks:
-      - dokploy_public
     restart: unless-stopped
 
   redis:
@@ -25,8 +23,6 @@ services:
       interval: 5s
       timeout: 3s
       retries: 5
-    networks:
-      - dokploy_public
     restart: unless-stopped
 
   backend:
@@ -51,16 +47,16 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
-    networks:
-      - dokploy_public
     restart: unless-stopped
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.mission-backend.rule=PathPrefix(`/api`)"
+      - "traefik.http.routers.mission-backend.rule=PathPrefix(\`/api\`)"
       - "traefik.http.routers.mission-backend.entrypoints=https"
       - "traefik.http.routers.mission-backend.tls=true"
       - "traefik.http.routers.mission-backend.service=mission-backend"
       - "traefik.http.services.mission-backend.loadbalancer.server.port=8000"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
   frontend:
     build:
@@ -76,12 +72,10 @@ services:
       NEXT_PUBLIC_AUTH_MODE: ${AUTH_MODE:-}
     depends_on:
       - backend
-    networks:
-      - dokploy_public
     restart: unless-stopped
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.mission-frontend.rule=Host(`mission.spidmax.win`)"
+      - "traefik.http.routers.mission-frontend.rule=Host(\`mission.spidmax.win\`)"
       - "traefik.http.routers.mission-frontend.entrypoints=https"
       - "traefik.http.routers.mission-frontend.tls=true"
       - "traefik.http.routers.mission-frontend.service=mission-frontend"
@@ -109,13 +103,7 @@ services:
       RQ_QUEUE_NAME: ${RQ_QUEUE_NAME:-default}
       RQ_DISPATCH_THROTTLE_SECONDS: ${RQ_DISPATCH_THROTTLE_SECONDS:-2.0}
       RQ_DISPATCH_MAX_RETRIES: ${RQ_DISPATCH_MAX_RETRIES:-3}
-    networks:
-      - dokploy_public
     restart: unless-stopped
 
 volumes:
   postgres_data:
-
-networks:
-  dokploy_public:
-    external: true
