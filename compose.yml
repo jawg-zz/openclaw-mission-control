@@ -50,7 +50,7 @@ services:
     restart: unless-stopped
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.mission-backend.rule=PathPrefix(\`/api\`)"
+      - 'traefik.http.routers.mission-backend.rule=PathPrefix(`/api`)'
       - "traefik.http.routers.mission-backend.entrypoints=https"
       - "traefik.http.routers.mission-backend.tls=true"
       - "traefik.http.routers.mission-backend.service=mission-backend"
@@ -75,7 +75,7 @@ services:
     restart: unless-stopped
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.mission-frontend.rule=Host(\`mission.spidmax.win\`)"
+      - 'traefik.http.routers.mission-frontend.rule=Host(`mission.spidmax.win`)'
       - "traefik.http.routers.mission-frontend.entrypoints=https"
       - "traefik.http.routers.mission-frontend.tls=true"
       - "traefik.http.routers.mission-frontend.service=mission-frontend"
