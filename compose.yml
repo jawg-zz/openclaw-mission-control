@@ -44,7 +44,7 @@ services:
       LOCAL_AUTH_TOKEN: ${LOCAL_AUTH_TOKEN:-a811065f8c1609e1a9d0b0e7a5d30b619af1d5f11089b87684244f561ce9fd2b}
       BASE_URL: ${BASE_URL:-https://mission.spidmax.win}
       RQ_REDIS_URL: redis://redis:6379/0
-      OPENCLAW_GATEWAY_URL: ${OPENCLAW_GATEWAY_URL:-http://host.docker.internal:18789}
+      OPENCLAW_GATEWAY_URL: ${OPENCLAW_GATEWAY_URL:-https://claw.spidmax.win}
       OPENCLAW_GATEWAY_TOKEN: ${OPENCLAW_GATEWAY_TOKEN:-b33999558ba1e7371a7e7e0c6d08365b}
     depends_on:
       db:
