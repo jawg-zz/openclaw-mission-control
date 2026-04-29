@@ -15,8 +15,6 @@ services:
       timeout: 3s
       retries: 20
     restart: unless-stopped
-    networks:
-      - homelab-wgeasy-u0ghdp
 
   redis:
     image: redis:7-alpine
@@ -26,8 +24,6 @@ services:
       timeout: 3s
       retries: 5
     restart: unless-stopped
-    networks:
-      - homelab-wgeasy-u0ghdp
 
   backend:
     build:
@@ -52,8 +48,6 @@ services:
       redis:
         condition: service_healthy
     restart: unless-stopped
-    networks:
-      - homelab-wgeasy-u0ghdp
     labels:
       - "traefik.enable=true"
       - 'traefik.http.routers.mission-backend.rule=PathPrefix(`/api`)'
@@ -79,8 +73,6 @@ services:
     depends_on:
       - backend
     restart: unless-stopped
-    networks:
-      - homelab-wgeasy-u0ghdp
     labels:
       - "traefik.enable=true"
       - 'traefik.http.routers.mission-frontend.rule=Host(`mission.spidmax.win`)'
@@ -112,12 +104,6 @@ services:
       RQ_DISPATCH_THROTTLE_SECONDS: ${RQ_DISPATCH_THROTTLE_SECONDS:-2.0}
       RQ_DISPATCH_MAX_RETRIES: ${RQ_DISPATCH_MAX_RETRIES:-3}
     restart: unless-stopped
-    networks:
-      - homelab-wgeasy-u0ghdp
 
 volumes:
   postgres_data:
-
-networks:
-  homelab-wgeasy-u0ghdp:
-    external: true
