@@ -34,56 +34,40 @@ services:
         required: false
     environment:
       DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@db:5432/${POSTGRES_DB:-mission_control}
-      CORS_ORIGINS: ${CORS_ORIGINS:-https://mission.spidmax.win}
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:3000}
       DB_AUTO_MIGRATE: ${DB_AUTO_MIGRATE:-true}
       AUTH_MODE: ${AUTH_MODE:-local}
       LOCAL_AUTH_TOKEN: ${LOCAL_AUTH_TOKEN:-a811065f8c1609e1a9d0b0e7a5d30b619af1d5f11089b87684244f561ce9fd2b}
-      BASE_URL: ${BASE_URL:-https://mission.spidmax.win}
-      RQ_REDIS_URL: redis://redis:6379/0
+      BASE_URL: ${BASE_URL:-http://localhost:8000}
       OPENCLAW_GATEWAY_URL: ${OPENCLAW_GATEWAY_URL:-http://host.docker.internal:18789}
       OPENCLAW_GATEWAY_TOKEN: ${OPENCLAW_GATEWAY_TOKEN:-b33999558ba1e7371a7e7e0c6d08365b}
+      RQ_REDIS_URL: redis://redis:6379/0
     depends_on:
       db:
         condition: service_healthy
       redis:
         condition: service_healthy
+    ports:
+      - "127.0.0.1:8000:8000"
     restart: unless-stopped
-    expose:
-      - "8000"
-    labels:
-      - "traefik.enable=true"
-      - 'traefik.http.routers.mission-backend.rule=PathPrefix(`/api`)'
-      - "traefik.http.routers.mission-backend.entrypoints=https"
-      - "traefik.http.routers.mission-backend.tls=true"
-      - "traefik.http.routers.mission-backend.service=mission-backend"
-      - "traefik.http.services.mission-backend.loadbalancer.server.port=8000"
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
 
   frontend:
     build:
       context: ./frontend
       args:
         NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-auto}
-        NEXT_PUBLIC_AUTH_MODE: ${NEXT_PUBLIC_AUTH_MODE:-local}
+        NEXT_PUBLIC_AUTH_MODE: ${AUTH_MODE:-local}
     env_file:
       - path: ./frontend/.env
         required: false
     environment:
       NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-auto}
-      NEXT_PUBLIC_AUTH_MODE: ${NEXT_PUBLIC_AUTH_MODE:-local}
+      NEXT_PUBLIC_AUTH_MODE: ${AUTH_MODE:-local}
     depends_on:
       - backend
+    ports:
+      - "127.0.0.1:3000:3000"
     restart: unless-stopped
-    expose:
-      - "3000"
-    labels:
-      - "traefik.enable=true"
-      - 'traefik.http.routers.mission-frontend.rule=Host(`mission.spidmax.win`)'
-      - "traefik.http.routers.mission-frontend.entrypoints=https"
-      - "traefik.http.routers.mission-frontend.tls=true"
-      - "traefik.http.routers.mission-frontend.service=mission-frontend"
-      - "traefik.http.services.mission-frontend.loadbalancer.server.port=3000"
 
   webhook-worker:
     build:
@@ -102,7 +86,9 @@ services:
       DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@db:5432/${POSTGRES_DB:-mission_control}
       AUTH_MODE: ${AUTH_MODE:-local}
       LOCAL_AUTH_TOKEN: ${LOCAL_AUTH_TOKEN:-a811065f8c1609e1a9d0b0e7a5d30b619af1d5f11089b87684244f561ce9fd2b}
-      BASE_URL: ${BASE_URL:-https://mission.spidmax.win}
+      BASE_URL: ${BASE_URL:-http://localhost:8000}
+      OPENCLAW_GATEWAY_URL: ${OPENCLAW_GATEWAY_URL:-http://host.docker.internal:18789}
+      OPENCLAW_GATEWAY_TOKEN: ${OPENCLAW_GATEWAY_TOKEN:-b33999558ba1e7371a7e7e0c6d08365b}
       RQ_REDIS_URL: redis://redis:6379/0
       RQ_QUEUE_NAME: ${RQ_QUEUE_NAME:-default}
       RQ_DISPATCH_THROTTLE_SECONDS: ${RQ_DISPATCH_THROTTLE_SECONDS:-2.0}
