@@ -62,13 +62,13 @@ services:
     build:
       context: ./frontend
       args:
-        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-auto}
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-https://mission.spidmax.win}
         NEXT_PUBLIC_AUTH_MODE: ${NEXT_PUBLIC_AUTH_MODE:-local}
     env_file:
       - path: ./frontend/.env
         required: false
     environment:
-      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-auto}
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-https://mission.spidmax.win}
       NEXT_PUBLIC_AUTH_MODE: ${NEXT_PUBLIC_AUTH_MODE:-local}
     depends_on:
       - backend
