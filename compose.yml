@@ -56,10 +56,11 @@ services:
       - dokploy-network
     labels:
       - "traefik.enable=true"
-      - 'traefik.http.routers.mission-backend.rule=PathPrefix(`/api`)'
+      - 'traefik.http.routers.mission-backend.rule=Host(`mission.spidmax.win`) && PathPrefix(`/api`)'
       - "traefik.http.routers.mission-backend.entrypoints=websecure"
       - "traefik.http.routers.mission-backend.tls.certresolver=letsencrypt"
       - "traefik.http.services.mission-backend.loadbalancer.server.port=8000"
+      - "traefik.http.routers.mission-backend.priority=100"
     extra_hosts:
       - "host.docker.internal:host-gateway"
 
