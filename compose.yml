@@ -77,7 +77,6 @@ services:
       - "traefik.enable=true"
       - 'traefik.http.routers.mission-frontend.rule=Host(`mission.spidmax.win`)'
       - "traefik.http.routers.mission-frontend.entrypoints=https"
-      - "traefik.http.routers.mission-frontend.tls=true"
       - "traefik.http.routers.mission-frontend.service=mission-frontend"
       - "traefik.http.services.mission-frontend.loadbalancer.server.port=3000"
 
