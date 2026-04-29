@@ -48,6 +48,8 @@ services:
       redis:
         condition: service_healthy
     restart: unless-stopped
+    expose:
+      - "8000"
     labels:
       - "traefik.enable=true"
       - 'traefik.http.routers.mission-backend.rule=PathPrefix(`/api`)'
@@ -73,6 +75,8 @@ services:
     depends_on:
       - backend
     restart: unless-stopped
+    expose:
+      - "3000"
     labels:
       - "traefik.enable=true"
       - 'traefik.http.routers.mission-frontend.rule=Host(`mission.spidmax.win`)'
